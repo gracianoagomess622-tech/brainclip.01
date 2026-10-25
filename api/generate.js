@@ -1,22 +1,30 @@
-const URL_GEMINI =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+// Modelos testados em ordem. Se um sair do ar (404), tenta o próximo.
+const MODELOS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-3-flash-preview"];
 
-function chamar(prompt) {
-  return fetch(URL_GEMINI, {
-    method: "POST",
-    headers: {
-      "x-goog-api-key": process.env.GEMINI_API_KEY,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        maxOutputTokens: 8000,
-        responseMimeType: "application/json",
-        thinkingConfig: { thinkingBudget: 0 },
-      },
-    }),
-  });
+async function chamar(prompt) {
+  let ultima = null;
+  for (const modelo of MODELOS) {
+    const r = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/" + modelo + ":generateContent",
+      {
+        method: "POST",
+        headers: {
+          "x-goog-api-key": process.env.GEMINI_API_KEY,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            maxOutputTokens: 16000,
+            responseMimeType: "application/json",
+          },
+        }),
+      }
+    );
+    ultima = { r, modelo };
+    if (r.status !== 404) return ultima;
+  }
+  return ultima;
 }
 
 function lerPrompt(req) {
@@ -39,24 +47,11 @@ module.exports = async (req, res) => {
 
   // Página de teste: abra /api/generate?teste=1
   if (req.method === "GET" && req.query && req.query.teste) {
-    if (!process.env.GEMINI_API_KEY) {
-      const nomes = Object.keys(process.env)
-        .filter((k) => /GEM|GOOG|KEY|API/i.test(k))
-        .map((k) => JSON.stringify(k))
-        .join(", ");
-      return res
-        .status(200)
-        .send(
-          "FALTA a variável GEMINI_API_KEY.\n" +
-            "Ambiente: " + process.env.VERCEL_ENV + "\n" +
-            "Commit: " + String(process.env.VERCEL_GIT_COMMIT_SHA).slice(0, 7) + "\n" +
-            "Nomes parecidos que a Vercel enxerga: " + (nomes || "nenhum")
-        );
-    }
+    if (!process.env.GEMINI_API_KEY) return res.status(200).send("FALTA a variável GEMINI_API_KEY.");
     try {
-      const r = await chamar('Responda só com este JSON: {"ok":true}');
+      const { r, modelo } = await chamar('Responda só com este JSON: {"ok":true}');
       const t = await r.text();
-      return res.status(200).send("Status do Gemini: " + r.status + "\n\n" + t.slice(0, 600));
+      return res.status(200).send("Modelo: " + modelo + "\nStatus do Gemini: " + r.status + "\n\n" + t.slice(0, 600));
     } catch (e) {
       return res.status(200).send("Falha de rede: " + String(e).slice(0, 300));
     }
@@ -69,16 +64,16 @@ module.exports = async (req, res) => {
   if (!prompt || prompt.length > 8000) return res.status(400).send("Pedido inválido");
 
   try {
-    const r = await chamar(prompt);
+    const { r, modelo } = await chamar(prompt);
     if (!r.ok) {
       const t = await r.text();
-      console.error("Gemini", r.status, t.slice(0, 300));
+      console.error("Gemini", modelo, r.status, t.slice(0, 300));
       return res.status(r.status === 429 ? 429 : 502).send("Erro na IA");
     }
     const d = await r.json();
     const parts =
       (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
-    const text = parts.map((p) => p.text || "").join("");
+    const text = parts.filter((p) => !p.thought).map((p) => p.text || "").join("");
     return res.status(200).json({ text });
   } catch (e) {
     console.error(e);
