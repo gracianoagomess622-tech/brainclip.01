@@ -22,7 +22,7 @@ async function chamar(prompt) {
       }
     );
     ultima = { r, modelo };
-    if (r.status !== 404) return ultima;
+     if (![404, 500, 503].includes(r.status)) return ultima;
   }
   return ultima;
 }
