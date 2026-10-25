@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BrainClip</title>
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+:root{--bg:#0a0a0a;--card:#161616;--line:#2a2a2a;--pri:#8b5cf6;--sec:#06b6d4;--tx:#fff;--tx2:#a1a1aa;--ok:#22c55e;--warn:#f59e0b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;line-height:1.5;font-size:15px}
+#app{max-width:560px;margin:0 auto;padding:16px 16px 96px}
+h1{font-size:22px;margin:0}h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;margin:0 0 6px;color:var(--sec)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.muted{color:var(--tx2);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.hero{background:linear-gradient(135deg,#8b5cf6 0%,#06b6d4 100%);border:0}
+.hero p{margin:4px 0 12px;opacity:.95}
+button,.btn{font:inherit;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);padding:10px 14px;min-height:44px}
+button:active{opacity:.7}
+.pri{background:var(--pri);border-color:var(--pri);font-weight:600}
+.ghost{background:transparent}
+.hero button{background:#fff;color:#111;border:0;font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 12px;min-height:40px;border-radius:999px;font-size:14px}
+.chip.on{background:var(--pri);border-color:var(--pri)}
+textarea,input[type=text]{width:100%;background:#0f0f0f;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px}
+textarea{min-height:130px;resize:vertical}
+label.t{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+label.t:last-child{border:0}
+.sw{appearance:none;width:46px;height:28px;border-radius:14px;background:#333;position:relative;flex:none;cursor:pointer}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.15s}
+.sw:checked{background:var(--ok)}.sw:checked::after{left:21px}
+.out{white-space:pre-wrap;word-break:break-word;font-size:14.5px}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:#101010;border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
+.tabs div{display:flex;width:100%;max-width:560px}
+.tabs button{flex:1;border:0;background:none;font-size:11px;padding:6px 2px;color:var(--tx2);display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabs button span{font-size:20px}
+.tabs button.on{color:var(--pri)}
+.spin{width:36px;height:36px;border:4px solid var(--line);border-top-color:var(--pri);border-radius:50%;animation:s 1s linear infinite;margin:20px auto}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{border-color:var(--warn);color:var(--warn)}
+.ok{color:var(--ok)}
+.tag{display:inline-block;background:#222;border-radius:8px;padding:2px 8px;font-size:12px;margin:2px 4px 2px 0;color:var(--tx2)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222;border:1px solid var(--line);padding:10px 16px;border-radius:12px;z-index:20;font-size:14px}
+.mt{margin-top:12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav class="tabs"><div id="tabs"></div></nav>
+<script>
+"use strict";
+var KEY = "acf_v1";
+var TONES = ["Natural","Energético","Calmo","Autoridade","Humor"];
+var DURS = ["15-30s","45-60s","60-90s","Todas"];
+var PLATS = ["TikTok","Instagram Reels","YouTube Shorts","Stories"];
+var TEMPLATES = ["Educativo","Storytelling emocional","Lista rápida (Top 3 / Top 5)","Bastidores / Rotina","Opinião (respeitosa, sem ataques)","Tutorial passo a passo"];
+var SUGG = ["Como parei de procrastinar","3 hábitos que mudaram minha pele","O erro que todo iniciante comete","Rotina matinal de 5 minutos"];
+var TABS = [["home","🏠","Início"],["create","✨","Criar"],["lib","📂","Conteúdos"],["stats","📊","Analytics"],["prof","👤","Perfil"]];
+
+var S = {
+  tab: "home", step: 1, idea: "", template: "", loading: false, err: "", result: null, editing: false, toast: "",
+  name: "Criador", tone: "Natural", dur: "Todas", plats: PLATS.slice(), cta: true, tags: true, emoji: true,
+  lib: []
+};
+/* ===== CONFIGURAÇÃO: cole aqui a URL do seu backend (veja worker.js) ===== */
+var API_URL = "/api/generate";
+var sample = null;
+if(API_URL.indexOf("COLE_AQUI") === -1){
+  sample = {json: async function(prompt){
+    var res = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({prompt: prompt})});
+    if(!res.ok) throw {code: res.status === 429 ? "rate_limited" : "error"};
+    var d = await res.json();
+    var t = String(d.text || "").replace(/```json|```/g, "").trim();
+    try{ return JSON.parse(t); }catch(x){ throw {code: "invalid_json"}; }
+  }};
+}
+
+function load(){
+  try{
+    var r = localStorage.getItem(KEY);
+    if(r){var o = JSON.parse(r); ["name","tone","dur","plats","cta","tags","emoji","lib"].forEach(function(k){ if(o[k] !== undefined) S[k] = o[k]; });}
+  }catch(e){}
+}
+function save(){
+  try{
+    var o = {}; ["name","tone","dur","plats","cta","tags","emoji","lib"].forEach(function(k){ o[k] = S[k]; });
+    localStorage.setItem(KEY, JSON.stringify(o));
+  }catch(e){}
+}
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; });
+}
+function toast(m){
+  S.toast = m; render();
+  setTimeout(function(){ if(S.toast === m){ S.toast = ""; render(); } }, 1800);
+}
+function chips(list, cur, act, multi){
+  return '<div class="row">' + list.map(function(x){
+    var on = multi ? cur.indexOf(x) > -1 : cur === x;
+    return '<button class="chip' + (on ? " on" : "") + '" data-act="' + act + '" data-v="' + esc(x) + '">' + esc(x) + '</button>';
+  }).join("") + '</div>';
+}
+
+/* ---------- Screens ---------- */
+function home(){
+  var last = S.lib.slice(0, 3);
+  return '<div class="top"><div><h1>BrainClip</h1><div class="muted">Transforme uma ideia em conteúdo viral em segundos</div></div></div>' +
+  '<h2>Olá, ' + esc(S.name) + ' 👋</h2><div class="muted" style="margin-bottom:12px">Pronto para criar conteúdo que viraliza?</div>' +
+  '<div class="card hero"><h2>🔥 Criar agora</h2><p>Transforme sua ideia em Reels, TikTok, Shorts e Stories.</p><button data-act="go" data-v="create">Começar criação</button></div>' +
+  '<div class="card"><h3>Sugestões rápidas</h3>' + SUGG.map(function(s){ return '<div><button class="ghost" style="width:100%;text-align:left;border:0" data-act="sugg" data-v="' + esc(s) + '">💡 ' + esc(s) + '</button></div>'; }).join("") + '</div>' +
+  '<div class="card"><h3>Seus últimos conteúdos</h3>' + (last.length ? last.map(function(c){ return '<div style="padding:6px 0">🎬 ' + esc(c.title) + '<div class="muted">' + esc(c.date) + '</div></div>'; }).join("") : '<div class="muted">Você ainda não salvou nada. Crie o primeiro conteúdo!</div>') + '</div>' +
+  '<div class="card"><h3>💡 Dica do dia</h3><div>Abra o vídeo com uma frase forte nos primeiros segundos para prender a atenção.</div></div>';
+}
+
+function create(){
+  if(S.loading) return '<div class="card" style="text-align:center"><div class="spin"></div><div>Gerando seu conteúdo…</div><div class="muted">Isso pode levar alguns segundos.</div></div>';
+  if(S.step === 3 && S.result) return result();
+  var h = '<div class="top"><h1>✨ Nova criação</h1></div>';
+  if(S.err) h += '<div class="card err">⚠️ ' + esc(S.err) + '</div>';
+  if(!sample) h += '<div class="card err">A geração por IA está indisponível no momento.</div>';
+  if(S.step === 1){
+    h += '<div class="card"><h3>Sua ideia</h3><div class="muted" style="margin-bottom:8px">Digite ou cole o que você falaria, ou o texto do seu áudio.</div><textarea id="idea" placeholder="Ex.: como parei de procrastinar usando a regra dos 5 minutos">' + esc(S.idea) + '</textarea></div>' +
+    '<div class="card"><h3>Template (opcional)</h3>' + chips(TEMPLATES, S.template, "tpl", false) + '</div>' +
+    '<button class="pri" style="width:100%" data-act="next">Continuar</button>';
+  } else {
+    h += '<div class="card"><h3>Configurações do conteúdo</h3>' +
+    '<div class="muted mt">Idioma: Português (Brasil)</div>' +
+    '<div class="muted mt">Tom de voz</div>' + chips(TONES, S.tone, "tone", false) +
+    '<div class="muted mt">Duração</div>' + chips(DURS, S.dur, "dur", false) +
+    '<div class="muted mt">Plataformas</div>' + chips(PLATS, S.plats, "plat", true) +
+    '<label class="t mt"><span>Incluir CTA</span><input type="checkbox" class="sw" data-act="cta"' + (S.cta ? " checked" : "") + '></label>' +
+    '<label class="t"><span>Hashtags automáticas</span><input type="checkbox" class="sw" data-act="tags"' + (S.tags ? " checked" : "") + '></label></div>' +
+    '<div class="row"><button class="ghost" data-act="back">Voltar</button><button class="pri" style="flex:1" data-act="gen">Gerar conteúdo completo</button></div>';
+  }
+  return h;
+}
+
+function block(title, text){
+  if(!text || (Array.isArray(text) && !text.length)) return "";
+  var t = Array.isArray(text) ? text.map(function(x,i){ return (S.__num ? (i+1) + ". " : "") + x; }).join("\n") : text;
+  return '<div class="card"><h3>' + esc(title) + '</h3><div class="out">' + esc(t) + '</div></div>';
+}
+function result(){
+  var r = S.result;
+  var h = '<div class="top"><h1 class="ok">✅ Conteúdo gerado</h1></div>';
+  h += block("1. Versão curta (15-30s)", r.short) + block("Hook (3s)", r.hook) + block("Legenda pronta", r.caption) +
+       block("2. Versão média (45-60s)", r.medium) + block("3. Versão longa (60-90s)", r.long) +
+       block("4. Texto para thumbnail", r.thumbnail);
+  S.__num = true; h += block("5. Títulos alternativos", r.titles); S.__num = false;
+  h += block("6. Hashtags estratégicas", Array.isArray(r.hashtags) ? r.hashtags.join(" ") : r.hashtags) + block("7. Call to action", r.cta);
+  if(S.editing) h += '<div class="card"><h3>✏️ O que deseja mudar?</h3><input type="text" id="edit" placeholder="Ex.: deixe o hook mais curto"><div class="row mt"><button class="ghost" data-act="editcancel">Cancelar</button><button class="pri" data-act="editgo">Aplicar</button></div></div>';
+  h += '<div class="row"><button data-act="copy">📋 Copiar tudo</button><button data-act="regen">🔄 Regenerar</button><button data-act="edit">✏️ Editar</button><button data-act="savec">💾 Salvar</button><button data-act="export">📤 Exportar</button></div>' +
+       '<div class="mt"><button class="ghost" data-act="newc">+ Nova criação</button></div>';
+  return h;
+}
+
+function lib(){
+  var h = '<div class="top"><h1>📂 Meus conteúdos</h1></div>';
+  if(!S.lib.length) return h + '<div class="card muted">Nada por aqui ainda. Gere um conteúdo e toque em 💾 Salvar.</div><button class="pri" data-act="go" data-v="create">Criar agora</button>';
+  return h + S.lib.map(function(c, i){
+    return '<div class="card"><div>🎬 <b>' + esc(c.title) + '</b></div><div class="muted">' + esc(c.date) + ' • ' + esc(c.plats.join(" + ")) + '</div>' +
+    '<div class="row mt"><button data-act="view" data-v="' + i + '">Ver</button><button data-act="del" data-v="' + i + '">Excluir</button></div></div>';
+  }).join("");
+}
+
+function stats(){
+  var n = S.lib.length;
+  return '<div class="top"><h1>📊 Analytics</h1></div>' +
+  '<div class="card"><h3>Sua produção</h3><div style="font-size:32px;font-weight:700">' + n + '</div><div class="muted">conteúdo(s) salvo(s) neste aparelho</div></div>' +
+  '<div class="card muted">Este app não está conectado a TikTok, Instagram ou YouTube, então não mostra visualizações, curtidas ou retenção. Para isso seria preciso integrar as APIs dessas plataformas.</div>';
+}
+
+function prof(){
+  return '<div class="top"><h1>👤 Perfil</h1></div>' +
+  '<div class="card"><h3>Seu nome</h3><input type="text" id="name" value="' + esc(S.name) + '"></div>' +
+  '<div class="card"><h3>Preferências de conteúdo</h3>' +
+  '<div class="muted">Idioma padrão: Português (Brasil)</div>' +
+  '<div class="muted mt">Tom de voz padrão</div>' + chips(TONES, S.tone, "tone", false) +
+  '<div class="muted mt">Duração padrão</div>' + chips(DURS, S.dur, "dur", false) +
+  '<label class="t mt"><span>CTA automático</span><input type="checkbox" class="sw" data-act="cta"' + (S.cta ? " checked" : "") + '></label>' +
+  '<label class="t"><span>Hashtags automáticas</span><input type="checkbox" class="sw" data-act="tags"' + (S.tags ? " checked" : "") + '></label>' +
+  '<label class="t"><span>Emojis nas legendas</span><input type="checkbox" class="sw" data-act="emoji"' + (S.emoji ? " checked" : "") + '></label></div>' +
+  '<div class="card"><h3>Sobre</h3><div class="muted">BrainClip • versão 1.0.0</div><div class="row mt"><button data-act="wipe">Apagar meus dados</button></div></div>';
+}
+
+function render(){
+  var a = document.getElementById("app");
+  var h = S.tab === "home" ? home() : S.tab === "create" ? create() : S.tab === "lib" ? lib() : S.tab === "stats" ? stats() : prof();
+  a.innerHTML = h + (S.toast ? '<div class="toast">' + esc(S.toast) + '</div>' : "");
+  document.getElementById("tabs").innerHTML = TABS.map(function(t){
+    return '<button class="' + (S.tab === t[0] ? "on" : "") + '" data-act="go" data-v="' + t[0] + '"><span>' + t[1] + '</span>' + t[2] + '</button>';
+  }).join("");
+}
+
+/* ---------- Generation ---------- */
+function plain(r){
+  var tg = Array.isArray(r.hashtags) ? r.hashtags.join(" ") : (r.hashtags || "");
+  var tt = Array.isArray(r.titles) ? r.titles.map(function(x,i){ return (i+1) + ". " + x; }).join("\n") : "";
+  return ["VERSÃO CURTA\n" + (r.short||""), "HOOK\n" + (r.hook||""), "LEGENDA\n" + (r.caption||""), "VERSÃO MÉDIA\n" + (r.medium||""), "VERSÃO LONGA\n" + (r.long||""),
+    "THUMBNAIL\n" + (r.thumbnail||""), "TÍTULOS\n" + tt, "HASHTAGS\n" + tg, "CTA\n" + (r.cta||"")].filter(function(x){ return x.split("\n")[1]; }).join("\n\n");
+}
+var RULES = "Você é o motor do app BrainClip. Responda SOMENTE com um objeto JSON válido, sem markdown. Todo o texto em português do Brasil. " +
+  "Regras: nunca invente fatos, números, estudos ou resultados; use só o que o usuário informou (se faltar dado, use marcadores como [seu resultado aqui]). " +
+  "Não gere conteúdo ofensivo, ilegal, discriminatório, sexual explícito, violento ou de ódio; se o pedido for assim, responda {\"blocked\":true}. " +
+  "Campos: short (script 15-30s com [pausa] e [corte] quando útil), hook (frase de 3s), caption (legenda pronta), medium (script 45-60s), long (script 60-90s), thumbnail (máx. 6 palavras), titles (3 títulos), hashtags (lista), cta (frase). ";
+
+async function run(prompt){
+  S.loading = true; S.err = ""; render();
+  try{
+    var r = await sample.json(prompt, {cache:false});
+    if(!r || r.blocked || (!r.short && !r.medium && !r.long)){ S.err = r && r.blocked ? "Não foi possível gerar este conteúdo. Tente outra ideia." : "A resposta veio incompleta. Tente de novo."; S.step = r && r.blocked ? 1 : S.step; }
+    else { S.result = r; S.step = 3; S.editing = false; }
+  }catch(e){
+    S.err = e && e.code === "rate_limited" ? "Muitas tentativas. Aguarde um momento." : "Não foi possível gerar agora. Tente novamente.";
+  }
+  S.loading = false; render();
+}
+function cfgText(){
+  var d = S.dur === "Todas" ? "gere as três versões (short, medium e long)" : "gere só a versão de " + S.dur + " no campo correspondente (short=15-30s, medium=45-60s, long=60-90s) e deixe as outras vazias";
+  return "Ideia do usuário: " + S.idea + "\nTemplate: " + (S.template || "livre") + "\nTom: " + S.tone + "\nPlataformas: " + S.plats.join(", ") + "\nDuração: " + d + "\n" +
+    (S.cta ? "Inclua CTA." : "Deixe cta vazio.") + " " + (S.tags ? "Inclua hashtags." : "Deixe hashtags vazio.") + " " + (S.emoji ? "Use emojis com moderação nas legendas." : "Não use emojis.");
+}
+function gen(variation){
+  if(!sample){ S.err = "A geração por IA está indisponível no momento."; render(); return; }
+  run(RULES + "\n" + cfgText() + (variation ? "\nCrie uma versão DIFERENTE da anterior, mantendo a mesma ideia central. Anterior:\n" + JSON.stringify(S.result) : ""));
+}
+
+/* ---------- Events ---------- */
+function copyText(t){
+  function fb(){ var x = document.createElement("textarea"); x.value = t; document.body.appendChild(x); x.select(); try{ document.execCommand("copy"); toast("✅ Conteúdo copiado"); }catch(e){ toast("Não foi possível copiar"); } document.body.removeChild(x); }
+  try{ navigator.clipboard.writeText(t).then(function(){ toast("✅ Conteúdo copiado"); }, fb); }catch(e){ fb(); }
+}
+document.addEventListener("input", function(e){
+  if(e.target.id === "idea") S.idea = e.target.value;
+  if(e.target.id === "name"){ S.name = e.target.value.trim() || "Criador"; save(); }
+});
+document.addEventListener("click", function(e){
+  var b = e.target.closest("[data-act]"); if(!b) return;
+  var a = b.dataset.act, v = b.dataset.v;
+  if(b.type === "checkbox") return;
+  act(a, v);
+});
+document.addEventListener("change", function(e){
+  var b = e.target; if(b.type !== "checkbox") return;
+  S[b.dataset.act] = b.checked; save(); render();
+});
+function act(a, v){
+  if(a === "go"){ S.tab = v; if(v === "create" && S.step === 3 && !S.result) S.step = 1; render(); window.scrollTo(0,0); return; }
+  if(a === "sugg"){ S.idea = v; S.tab = "create"; S.step = 1; S.result = null; render(); return; }
+  if(a === "tpl"){ S.template = S.template === v ? "" : v; render(); return; }
+  if(a === "next"){
+    if(S.idea.trim().length < 3){ S.err = "Conte sua ideia para eu criar o conteúdo."; render(); return; }
+    S.err = ""; S.step = 2; render(); window.scrollTo(0,0); return;
+  }
+  if(a === "back"){ S.step = 1; S.err = ""; render(); return; }
+  if(a === "tone"){ S.tone = v; save(); render(); return; }
+  if(a === "dur"){ S.dur = v; save(); render(); return; }
+  if(a === "plat"){
+    var i = S.plats.indexOf(v);
+    if(i > -1){ if(S.plats.length > 1) S.plats.splice(i, 1); } else S.plats.push(v);
+    save(); render(); return;
+  }
+  if(a === "gen"){ gen(false); return; }
+  if(a === "regen"){ gen(true); return; }
+  if(a === "copy"){ copyText(plain(S.result)); return; }
+  if(a === "edit"){ S.editing = true; render(); return; }
+  if(a === "editcancel"){ S.editing = false; render(); return; }
+  if(a === "editgo"){
+    var el = document.getElementById("edit"), ins = el ? el.value.trim() : "";
+    if(!ins){ toast("Descreva a mudança"); return; }
+    run(RULES + "\nAplique SOMENTE esta alteração ao conteúdo e devolva o JSON completo com os mesmos campos.\nAlteração: " + ins + "\nConteúdo atual:\n" + JSON.stringify(S.result));
+    return;
+  }
+  if(a === "savec"){
+    var t = S.idea.trim().slice(0, 60) || "Sem título";
+    S.lib.unshift({title: t, date: new Date().toLocaleDateString("pt-BR"), plats: S.plats.slice(), result: S.result});
+    save(); toast("💾 Salvo em Meus Conteúdos"); return;
+  }
+  if(a === "export"){
+    var txt = plain(S.result);
+    if(navigator.share){ navigator.share({title: "Conteúdo", text: txt}).then(function(){ toast("✅ Exportado"); }, function(){}); }
+    else {
+      try{
+        var bl = new Blob([txt], {type:"text/plain;charset=utf-8"}), u = URL.createObjectURL(bl), an = document.createElement("a");
+        an.href = u; an.download = "conteudo.txt"; document.body.appendChild(an); an.click(); document.body.removeChild(an);
+        setTimeout(function(){ URL.revokeObjectURL(u); }, 1000); toast("✅ Exportado");
+      }catch(er){ copyText(txt); }
+    }
+    return;
+  }
+  if(a === "newc"){ S.step = 1; S.result = null; S.idea = ""; S.template = ""; S.err = ""; render(); return; }
+  if(a === "view"){ var c = S.lib[+v]; if(c){ S.result = c.result; S.idea = c.title; S.step = 3; S.tab = "create"; render(); } return; }
+  if(a === "del"){ S.lib.splice(+v, 1); save(); render(); return; }
+  if(a === "wipe"){ if(!S.wipe){ S.wipe = true; toast("Toque de novo para confirmar"); setTimeout(function(){ S.wipe = false; }, 3000); return; } S.wipe = false; try{ localStorage.removeItem(KEY); }catch(e){} S.lib = []; S.name = "Criador"; toast("Dados apagados"); return; }
+}
+
+load();
+render();
+if("serviceWorker" in navigator){ window.addEventListener("load", function(){ navigator.serviceWorker.register("/sw.js").catch(function(){}); }); }
+
+</script>
+</body>
+</html>
