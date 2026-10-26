@@ -1,1 +1,8 @@
-
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.jgcompany.brainclip",
+        "sha256_cert_fingerprints": ["A7:33:8F:AA:07:01:D3:4B:45:33:59:2E:E5:1B:69:3D:D6:20:59:EC:B9:48:7F:E8:A6:14:01:C1:12:06:7A:60"]
+      }
+    }]
