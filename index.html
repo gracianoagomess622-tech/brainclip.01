@@ -3,306 +3,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
 <title>BrainClip</title>
-<meta name="theme-color" content="#0a0a0a">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <style>
-:root{--bg:#0a0a0a;--card:#161616;--line:#2a2a2a;--pri:#8b5cf6;--sec:#06b6d4;--tx:#fff;--tx2:#a1a1aa;--ok:#22c55e;--warn:#f59e0b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;line-height:1.5;font-size:15px}
-#app{max-width:560px;margin:0 auto;padding:16px 16px 96px}
-h1{font-size:22px;margin:0}h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;margin:0 0 6px;color:var(--sec)}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.muted{color:var(--tx2);font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
-.hero{background:linear-gradient(135deg,#8b5cf6 0%,#06b6d4 100%);border:0}
-.hero p{margin:4px 0 12px;opacity:.95}
-button,.btn{font:inherit;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);padding:10px 14px;min-height:44px}
-button:active{opacity:.7}
-.pri{background:var(--pri);border-color:var(--pri);font-weight:600}
-.ghost{background:transparent}
-.hero button{background:#fff;color:#111;border:0;font-weight:700}
-.row{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:8px 12px;min-height:40px;border-radius:999px;font-size:14px}
-.chip.on{background:var(--pri);border-color:var(--pri)}
-textarea,input[type=text]{width:100%;background:#0f0f0f;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px}
-textarea{min-height:130px;resize:vertical}
-label.t{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-label.t:last-child{border:0}
-.sw{appearance:none;width:46px;height:28px;border-radius:14px;background:#333;position:relative;flex:none;cursor:pointer}
-.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.15s}
-.sw:checked{background:var(--ok)}.sw:checked::after{left:21px}
-.out{white-space:pre-wrap;word-break:break-word;font-size:14.5px}
-.tabs{position:fixed;left:0;right:0;bottom:0;background:#101010;border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
-.tabs div{display:flex;width:100%;max-width:560px}
-.tabs button{flex:1;border:0;background:none;font-size:11px;padding:6px 2px;color:var(--tx2);display:flex;flex-direction:column;align-items:center;gap:2px}
-.tabs button span{font-size:20px}
-.tabs button.on{color:var(--pri)}
-.spin{width:36px;height:36px;border:4px solid var(--line);border-top-color:var(--pri);border-radius:50%;animation:s 1s linear infinite;margin:20px auto}
-@keyframes s{to{transform:rotate(360deg)}}
-.err{border-color:var(--warn);color:var(--warn)}
-.ok{color:var(--ok)}
-.tag{display:inline-block;background:#222;border-radius:8px;padding:2px 8px;font-size:12px;margin:2px 4px 2px 0;color:var(--tx2)}
-.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222;border:1px solid var(--line);padding:10px 16px;border-radius:12px;z-index:20;font-size:14px}
-.mt{margin-top:12px}
+:root{--bg:#0a0a0f;--s1:#13131b;--s2:#1b1b26;--ln:#2a2a38;--pri:#8b5cf6;--sec:#06b6d4;--tx:#f5f5f7;--t2:#9a9aae;--ok:#22c55e;--wr:#f59e0b;--g:linear-gradient(135deg,#8b5cf6,#06b6d4);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(900px 420px at 50% -120px,#2a1b52 0,transparent 70%),var(--bg);color:var(--tx);font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.5}
+#app{max-width:560px;margin:0 auto;padding:14px 16px 120px}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.i.s{width:18px;height:18px}.i.l{width:28px;height:28px}
+h1{font-size:24px;margin:0;letter-spacing:-.4px}h2{font-size:17px;margin:22px 0 10px}h3{font-size:14px;margin:0}
+.mut{color:var(--t2);font-size:13px}.row{display:flex;align-items:center;gap:10px}.sp{justify-content:space-between}.wrap{flex-wrap:wrap}.mt{margin-top:12px}
+.bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px}.mark{width:34px;height:34px;border-radius:10px;background:var(--g);display:grid;place-items:center;color:#fff}
+.card{background:var(--s1);border:1px solid var(--ln);border-radius:18px;padding:16px;margin-bottom:12px}
+.hero{background:var(--g);border:0;position:relative;overflow:hidden;padding:20px}.hero:after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.14)}
+.hero p{margin:6px 0 14px;opacity:.95;max-width:80%}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--ln);background:var(--s2);border-radius:14px;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px}button:active{transform:scale(.97)}
+.btn{background:var(--g);border:0;font-weight:700;color:#fff}.btn.w{width:100%;min-height:50px;font-size:16px}.wht{background:#fff;color:#111;border:0;font-weight:700}.gh{background:transparent}
+.chip{border-radius:999px;min-height:40px;padding:8px 14px;font-size:14px}.chip.on{background:var(--pri);border-color:var(--pri);font-weight:600}
+.seg{display:flex;flex-wrap:wrap;background:var(--s2);border:1px solid var(--ln);border-radius:14px;padding:4px;gap:4px}.seg button{flex:1 1 auto;border:0;background:transparent;min-height:38px;padding:6px 10px;font-size:13.5px;white-space:nowrap}.seg button.on{background:var(--pri);font-weight:600}
+textarea,input[type=text]{width:100%;background:var(--s2);color:var(--tx);border:1px solid var(--ln);border-radius:14px;padding:13px;font:inherit;font-size:16px;outline:0}textarea{min-height:140px;resize:vertical}textarea:focus,input:focus{border-color:var(--pri)}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tc{flex-direction:column;align-items:flex-start;text-align:left;height:100%;padding:14px;gap:8px;border-radius:16px}.tc.on{border-color:var(--pri);background:#241a45}.tc b{font-size:14px}.tc span{font-size:12px;color:var(--t2)}
+.ib{width:38px;height:38px;border-radius:12px;background:var(--g);display:grid;place-items:center;color:#fff;flex:none}.ib.d{background:var(--s2);color:var(--sec)}
+.hs{display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}.hs button{flex:none;width:150px}
+.lr{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln);width:100%;background:none;border-left:0;border-right:0;border-top:0;border-radius:0;justify-content:flex-start;text-align:left}.lr:last-child{border:0}
+.sw{appearance:none;width:48px;height:28px;border-radius:14px;background:#33334a;position:relative;flex:none;cursor:pointer}.sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.15s}.sw:checked{background:var(--ok)}.sw:checked:after{left:23px}
+label.tr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
+.out{white-space:pre-wrap;word-break:break-word;font-size:14.5px}.tag{display:inline-block;background:var(--s2);border:1px solid var(--ln);border-radius:8px;padding:2px 8px;font-size:12px;color:var(--t2);margin:2px 4px 2px 0}
+.acts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}.acts button{flex-direction:column;gap:4px;font-size:11.5px;padding:10px 2px;min-height:60px}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.st .card{margin:0;text-align:center;padding:14px 6px}.st b{display:block;font-size:26px;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bt{height:8px;border-radius:6px;background:var(--s2);overflow:hidden}.bt i{display:block;height:100%;background:var(--g);border-radius:6px}
+.stp{display:flex;gap:6px;margin-bottom:16px}.stp i{flex:1;height:5px;border-radius:4px;background:var(--s2)}.stp i.on{background:var(--g)}
+.skel{height:78px;border-radius:16px;margin-bottom:10px;background:linear-gradient(90deg,var(--s1),var(--s2),var(--s1));background-size:200% 100%;animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
+.err{border-color:var(--wr);color:var(--wr)}.ok{color:var(--ok)}
+.av{width:72px;height:72px;border-radius:50%;background:var(--g);display:grid;place-items:center;font-size:30px;font-weight:700;margin:0 auto 10px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(14,14,20,.94);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+.tabs div{display:flex;max-width:560px;margin:0 auto}.tabs button{flex:1;flex-direction:column;gap:2px;border:0;background:none;font-size:11px;color:var(--t2);min-height:52px;padding:4px 0}.tabs button.on{color:#fff}.tabs button.on .pl{background:var(--g)}
+.pl{width:46px;height:28px;border-radius:14px;display:grid;place-items:center}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#262636;border:1px solid var(--ln);padding:10px 16px;border-radius:14px;z-index:20;font-size:14px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M6 20v-8M12 20V5M18 20v-5"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+<symbol id="i-redo" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.5 2.9 1-6.1L3.1 9.5l6.1-.9z"/></symbol>
+<symbol id="i-go" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+<symbol id="i-hash" viewBox="0 0 24 24"><path d="M5 9h15M4 15h15M10 4 8 20M16 4l-2 16"/></symbol>
+<symbol id="i-mega" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l8 4V6L7 10H4a1 1 0 0 0-1 1zM19 9a4 4 0 0 1 0 6"/></symbol>
+<symbol id="i-type" viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></symbol>
+<symbol id="i-tune" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+<symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v17H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20S4 15 4 9a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+<symbol id="i-steps" viewBox="0 0 24 24"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M12 7h8M12 15h8"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+</defs></svg>
 <div id="app"></div>
 <nav class="tabs"><div id="tabs"></div></nav>
 <script>
 "use strict";
-var KEY = "acf_v1";
+var KEY = "bc_v2", API_URL = "/api/generate";
 var TONES = ["Natural","Energético","Calmo","Autoridade","Humor"];
 var DURS = ["15-30s","45-60s","60-90s","Todas"];
-var PLATS = ["TikTok","Instagram Reels","YouTube Shorts","Stories"];
-var TEMPLATES = ["Educativo","Storytelling emocional","Lista rápida (Top 3 / Top 5)","Bastidores / Rotina","Opinião (respeitosa, sem ataques)","Tutorial passo a passo"];
+var PLATS = ["TikTok","Reels","Shorts","Facebook","Threads","Stories"];
+var TPL = [["Educativo","book","Ensine algo em segundos","Educativo"],["Storytelling","heart","Uma história que conecta","Storytelling emocional"],["Lista rápida","list","Top 3 ou Top 5 direto","Lista rápida (Top 3 / Top 5)"],["Bastidores","cam","Mostre sua rotina","Bastidores / Rotina"],["Opinião","chat","Ponto de vista respeitoso","Opinião (respeitosa, sem ataques)"],["Tutorial","steps","Passo a passo simples","Tutorial passo a passo"]];
 var SUGG = ["Como parei de procrastinar","3 hábitos que mudaram minha pele","O erro que todo iniciante comete","Rotina matinal de 5 minutos"];
-var TABS = [["home","🏠","Início"],["create","✨","Criar"],["lib","📂","Conteúdos"],["stats","📊","Analytics"],["prof","👤","Perfil"]];
+var SECT = [["short","Versão curta · 15–30s","play"],["hook","Gancho · 3s","zap"],["caption","Legenda pronta","type"],["medium","Versão média · 45–60s","play"],["long","Versão longa · 60–90s","play"],["thumbnail","Texto da thumbnail","type"],["titles","Títulos alternativos","list"],["hashtags","Hashtags","hash"],["cta","Chamada para ação","mega"]];
+var TABS = [["home","home","Início"],["create","spark","Criar"],["lib","folder","Conteúdos"],["stats","chart","Analytics"],["prof","user","Perfil"]];
+var MSGS = ["Pensando no melhor gancho…","Escrevendo os roteiros…","Montando legenda e hashtags…","Quase pronto…"];
+var S = {tab:"home",step:1,idea:"",template:"",loading:false,err:"",result:null,editing:false,toast:"",q:"",flt:"all",name:"Criador",tone:"Natural",dur:"45-60s",plats:PLATS.slice(),cta:true,tags:true,emoji:true,lib:[],created:0};
 
-var S = {
-  tab: "home", step: 1, idea: "", template: "", loading: false, err: "", result: null, editing: false, toast: "",
-  name: "Criador", tone: "Natural", dur: "Todas", plats: PLATS.slice(), cta: true, tags: true, emoji: true,
-  lib: []
-};
-/* ===== CONFIGURAÇÃO: cole aqui a URL do seu backend (veja worker.js) ===== */
-var API_URL = "/api/generate";
-var sample = null;
-if(API_URL.indexOf("COLE_AQUI") === -1){
-  sample = {json: async function(prompt){
-    var res = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({prompt: prompt})});
-    if(!res.ok) throw {code: res.status === 429 ? "rate_limited" : "error"};
-    var d = await res.json();
-    var t = String(d.text || "").replace(/```json|```/g, "").trim();
-    try{ return JSON.parse(t); }catch(x){ throw {code: "invalid_json"}; }
-  }};
-}
+function ic(n,c){ return '<svg class="i '+(c||"")+'"><use href="#i-'+n+'"/></svg>'; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+var KEYS = ["name","tone","dur","plats","cta","tags","emoji","lib","created"];
+function load(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||"{}"); KEYS.forEach(function(k){ if(o[k]!==undefined) S[k]=o[k]; }); }catch(e){} }
+function save(){ try{ var o={}; KEYS.forEach(function(k){ o[k]=S[k]; }); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+function toast(m){ S.toast=m; render(); setTimeout(function(){ if(S.toast===m){ S.toast=""; render(); } },1800); }
+function seg(list,cur,act){ return '<div class="seg">'+list.map(function(x){ return '<button class="'+(cur===x?"on":"")+'" data-act="'+act+'" data-v="'+esc(x)+'">'+esc(x)+'</button>'; }).join("")+'</div>'; }
+function chips(list,cur,act){ return '<div class="row wrap">'+list.map(function(x){ return '<button class="chip'+(cur.indexOf(x)>-1?" on":"")+'" data-act="'+act+'" data-v="'+esc(x)+'">'+esc(x)+'</button>'; }).join("")+'</div>'; }
+function sw(act,on,label,icon){ return '<label class="tr"><span class="row">'+ic(icon,"s")+esc(label)+'</span><input type="checkbox" class="sw" data-act="'+act+'"'+(on?" checked":"")+'></label>'; }
+function head(t,sub){ return '<div class="bar"><div><h1>'+t+'</h1>'+(sub?'<div class="mut">'+sub+'</div>':"")+'</div></div>'; }
 
-function load(){
-  try{
-    var r = localStorage.getItem(KEY);
-    if(r){var o = JSON.parse(r); ["name","tone","dur","plats","cta","tags","emoji","lib"].forEach(function(k){ if(o[k] !== undefined) S[k] = o[k]; });}
-  }catch(e){}
-}
-function save(){
-  try{
-    var o = {}; ["name","tone","dur","plats","cta","tags","emoji","lib"].forEach(function(k){ o[k] = S[k]; });
-    localStorage.setItem(KEY, JSON.stringify(o));
-  }catch(e){}
-}
-function esc(s){
-  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; });
-}
-function toast(m){
-  S.toast = m; render();
-  setTimeout(function(){ if(S.toast === m){ S.toast = ""; render(); } }, 1800);
-}
-function chips(list, cur, act, multi){
-  return '<div class="row">' + list.map(function(x){
-    var on = multi ? cur.indexOf(x) > -1 : cur === x;
-    return '<button class="chip' + (on ? " on" : "") + '" data-act="' + act + '" data-v="' + esc(x) + '">' + esc(x) + '</button>';
-  }).join("") + '</div>';
-}
-
-/* ---------- Screens ---------- */
 function home(){
-  var last = S.lib.slice(0, 3);
-  return '<div class="top"><div><h1>BrainClip</h1><div class="muted">Transforme uma ideia em conteúdo viral em segundos</div></div></div>' +
-  '<h2>Olá, ' + esc(S.name) + ' 👋</h2><div class="muted" style="margin-bottom:12px">Pronto para criar conteúdo que viraliza?</div>' +
-  '<div class="card hero"><h2>🔥 Criar agora</h2><p>Transforme sua ideia em Reels, TikTok, Shorts e Stories.</p><button data-act="go" data-v="create">Começar criação</button></div>' +
-  '<div class="card"><h3>Sugestões rápidas</h3>' + SUGG.map(function(s){ return '<div><button class="ghost" style="width:100%;text-align:left;border:0" data-act="sugg" data-v="' + esc(s) + '">💡 ' + esc(s) + '</button></div>'; }).join("") + '</div>' +
-  '<div class="card"><h3>Seus últimos conteúdos</h3>' + (last.length ? last.map(function(c){ return '<div style="padding:6px 0">🎬 ' + esc(c.title) + '<div class="muted">' + esc(c.date) + '</div></div>'; }).join("") : '<div class="muted">Você ainda não salvou nada. Crie o primeiro conteúdo!</div>') + '</div>' +
-  '<div class="card"><h3>💡 Dica do dia</h3><div>Abra o vídeo com uma frase forte nos primeiros segundos para prender a atenção.</div></div>';
+  var last=S.lib.slice(0,3);
+  return '<div class="bar"><div class="logo"><div class="mark">'+ic("play")+'</div>BrainClip</div></div>'+
+  '<h1>Olá, '+esc(S.name)+' 👋</h1><div class="mut">O que vamos criar hoje?</div>'+
+  '<div class="card hero mt"><h2 style="margin:0">Ideia → roteiro pronto</h2><p>Roteiro, gancho, legenda e hashtags para vídeos curtos em segundos.</p><button class="wht" data-act="go" data-v="create">'+ic("spark","s")+'Começar a criar</button></div>'+
+  '<h2>Comece por um modelo</h2><div class="hs">'+TPL.map(function(t,i){ return '<button class="tc" data-act="tpl0" data-v="'+i+'"><span class="ib">'+ic(t[1],"s")+'</span><b>'+t[0]+'</b><span>'+t[2]+'</span></button>'; }).join("")+'</div>'+
+  '<h2>Ideias rápidas</h2><div class="row wrap">'+SUGG.map(function(s){ return '<button class="chip" data-act="sugg" data-v="'+esc(s)+'">'+esc(s)+'</button>'; }).join("")+'</div>'+
+  '<h2>Seus últimos conteúdos</h2><div class="card">'+(last.length?last.map(function(c,i){ return '<button class="lr" data-act="view" data-v="'+i+'"><span class="ib d">'+ic("play","s")+'</span><span style="flex:1"><b>'+esc(c.title)+'</b><div class="mut">'+esc(c.date)+'</div></span>'+ic("go","s")+'</button>'; }).join(""):'<div class="mut">Você ainda não salvou nada. Crie o primeiro!</div>')+'</div>'+
+  '<div class="card row" style="align-items:flex-start"><span class="ib d">'+ic("bulb","s")+'</span><div><h3>Dica do dia</h3><div class="mut" style="margin-top:4px">Abra o vídeo com uma frase forte nos primeiros segundos para prender a atenção.</div></div></div>';
 }
 
 function create(){
-  if(S.loading) return '<div class="card" style="text-align:center"><div class="spin"></div><div>Gerando seu conteúdo…</div><div class="muted">Isso pode levar alguns segundos.</div></div>';
-  if(S.step === 3 && S.result) return result();
-  var h = '<div class="top"><h1>✨ Nova criação</h1></div>';
-  if(S.err) h += '<div class="card err">⚠️ ' + esc(S.err) + '</div>';
-  if(!sample) h += '<div class="card err">A geração por IA está indisponível no momento.</div>';
-  if(S.step === 1){
-    h += '<div class="card"><h3>Sua ideia</h3><div class="muted" style="margin-bottom:8px">Digite ou cole o que você falaria, ou o texto do seu áudio.</div><textarea id="idea" placeholder="Ex.: como parei de procrastinar usando a regra dos 5 minutos">' + esc(S.idea) + '</textarea></div>' +
-    '<div class="card"><h3>Template (opcional)</h3>' + chips(TEMPLATES, S.template, "tpl", false) + '</div>' +
-    '<button class="pri" style="width:100%" data-act="next">Continuar</button>';
+  if(S.loading) return head("Criando…","Isso pode levar alguns segundos")+'<div class="card" style="text-align:center"><div class="mark" style="margin:0 auto 10px;width:48px;height:48px">'+ic("spark","l")+'</div><b id="lm">'+MSGS[0]+'</b></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+  if(S.step===3&&S.result) return result();
+  var h='<div class="stp"><i class="on"></i><i class="'+(S.step>=2?"on":"")+'"></i><i></i></div>';
+  if(S.err) h+='<div class="card err">⚠️ '+esc(S.err)+'</div>';
+  if(S.step===1){
+    h+=head("Qual é a sua ideia?","Escreva ou cole o que você falaria no vídeo")+'<div class="card"><textarea id="idea" maxlength="1500" placeholder="Ex.: como parei de procrastinar usando a regra dos 5 minutos">'+esc(S.idea)+'</textarea><div class="mut mt" id="cnt">'+S.idea.length+' / 1500</div></div>'+
+    '<h2 style="margin-top:6px">Modelo (opcional)</h2><div class="tg">'+TPL.map(function(t,i){ return '<button class="tc'+(S.template===t[3]?" on":"")+'" data-act="tpl" data-v="'+i+'"><span class="ib">'+ic(t[1],"s")+'</span><b>'+t[0]+'</b><span>'+t[2]+'</span></button>'; }).join("")+'</div>'+
+    '<div class="mt"><button class="btn w" data-act="next">Continuar'+ic("go","s")+'</button></div>';
   } else {
-    h += '<div class="card"><h3>Configurações do conteúdo</h3>' +
-    '<div class="muted mt">Idioma: Português (Brasil)</div>' +
-    '<div class="muted mt">Tom de voz</div>' + chips(TONES, S.tone, "tone", false) +
-    '<div class="muted mt">Duração</div>' + chips(DURS, S.dur, "dur", false) +
-    '<div class="muted mt">Plataformas</div>' + chips(PLATS, S.plats, "plat", true) +
-    '<label class="t mt"><span>Incluir CTA</span><input type="checkbox" class="sw" data-act="cta"' + (S.cta ? " checked" : "") + '></label>' +
-    '<label class="t"><span>Hashtags automáticas</span><input type="checkbox" class="sw" data-act="tags"' + (S.tags ? " checked" : "") + '></label></div>' +
-    '<div class="row"><button class="ghost" data-act="back">Voltar</button><button class="pri" style="flex:1" data-act="gen">Gerar conteúdo completo</button></div>';
+    h+=head("Como deve ficar?","Ajuste o estilo do conteúdo")+'<div class="card"><h3>Tom de voz</h3><div class="mt">'+seg(TONES,S.tone,"tone")+'</div><h3 style="margin-top:16px">Duração</h3><div class="mt">'+seg(DURS,S.dur,"dur")+'</div><h3 style="margin-top:16px">Plataformas</h3><div class="mt">'+chips(PLATS,S.plats,"plat")+'</div></div>'+
+    '<div class="card">'+sw("cta",S.cta,"Incluir chamada para ação","mega")+sw("tags",S.tags,"Hashtags automáticas","hash")+sw("emoji",S.emoji,"Emojis nas legendas","spark")+'</div>'+
+    '<div class="row"><button class="gh" data-act="back">Voltar</button><button class="btn" style="flex:1;min-height:50px" data-act="gen">'+ic("spark","s")+'Gerar conteúdo</button></div>';
   }
   return h;
 }
-
-function block(title, text){
-  if(!text || (Array.isArray(text) && !text.length)) return "";
-  var t = Array.isArray(text) ? text.map(function(x,i){ return (S.__num ? (i+1) + ". " : "") + x; }).join("\n") : text;
-  return '<div class="card"><h3>' + esc(title) + '</h3><div class="out">' + esc(t) + '</div></div>';
-}
+function sectTxt(v){ return Array.isArray(v)?v.map(function(x,i){return (v.length>1&&!/^#/.test(x)?(i+1)+". ":"")+x;}).join(Array.isArray(v)&&/^#/.test(v[0]||"")?" ":"\n"):v; }
 function result(){
-  var r = S.result;
-  var h = '<div class="top"><h1 class="ok">✅ Conteúdo gerado</h1></div>';
-  h += block("1. Versão curta (15-30s)", r.short) + block("Hook (3s)", r.hook) + block("Legenda pronta", r.caption) +
-       block("2. Versão média (45-60s)", r.medium) + block("3. Versão longa (60-90s)", r.long) +
-       block("4. Texto para thumbnail", r.thumbnail);
-  S.__num = true; h += block("5. Títulos alternativos", r.titles); S.__num = false;
-  h += block("6. Hashtags estratégicas", Array.isArray(r.hashtags) ? r.hashtags.join(" ") : r.hashtags) + block("7. Call to action", r.cta);
-  if(S.editing) h += '<div class="card"><h3>✏️ O que deseja mudar?</h3><input type="text" id="edit" placeholder="Ex.: deixe o hook mais curto"><div class="row mt"><button class="ghost" data-act="editcancel">Cancelar</button><button class="pri" data-act="editgo">Aplicar</button></div></div>';
-  h += '<div class="row"><button data-act="copy">📋 Copiar tudo</button><button data-act="regen">🔄 Regenerar</button><button data-act="edit">✏️ Editar</button><button data-act="savec">💾 Salvar</button><button data-act="export">📤 Exportar</button></div>' +
-       '<div class="mt"><button class="ghost" data-act="newc">+ Nova criação</button></div>';
-  return h;
+  var r=S.result;
+  var h='<div class="bar"><div><h1 class="ok">Pronto! ✅</h1><div class="mut">'+esc(S.idea.slice(0,70))+'</div></div></div>'+
+  '<div class="acts"><button data-act="copy">'+ic("copy","s")+'Copiar</button><button data-act="regen">'+ic("redo","s")+'Refazer</button><button data-act="edit">'+ic("edit","s")+'Editar</button><button data-act="savec">'+ic("save","s")+'Salvar</button><button data-act="export">'+ic("share","s")+'Enviar</button></div>';
+  if(S.editing) h+='<div class="card"><h3>O que deseja mudar?</h3><input type="text" id="edit" placeholder="Ex.: deixe o gancho mais curto" style="margin-top:10px"><div class="row mt"><button class="gh" data-act="editcancel">Cancelar</button><button class="btn" data-act="editgo">Aplicar</button></div></div>';
+  SECT.forEach(function(s){ var v=r[s[0]]; if(!v||(Array.isArray(v)&&!v.length)) return;
+    h+='<div class="card"><div class="row sp"><div class="row"><span class="ib d">'+ic(s[2],"s")+'</span><h3>'+s[1]+'</h3></div><button class="gh" style="min-height:38px;padding:6px 10px" data-act="copy1" data-v="'+s[0]+'">'+ic("copy","s")+'</button></div><div class="out mt">'+esc(sectTxt(v))+'</div></div>'; });
+  return h+'<button class="gh w" style="width:100%" data-act="newc">'+ic("spark","s")+'Nova criação</button>';
 }
-
 function lib(){
-  var h = '<div class="top"><h1>📂 Meus conteúdos</h1></div>';
-  if(!S.lib.length) return h + '<div class="card muted">Nada por aqui ainda. Gere um conteúdo e toque em 💾 Salvar.</div><button class="pri" data-act="go" data-v="create">Criar agora</button>';
-  return h + S.lib.map(function(c, i){
-    return '<div class="card"><div>🎬 <b>' + esc(c.title) + '</b></div><div class="muted">' + esc(c.date) + ' • ' + esc(c.plats.join(" + ")) + '</div>' +
-    '<div class="row mt"><button data-act="view" data-v="' + i + '">Ver</button><button data-act="del" data-v="' + i + '">Excluir</button></div></div>';
-  }).join("");
+  var q=S.q.toLowerCase(), items=S.lib.map(function(c,i){return [c,i];}).filter(function(p){ return (S.flt==="all"||p[0].fav)&&(!q||p[0].title.toLowerCase().indexOf(q)>-1); });
+  var h=head("Meus conteúdos",S.lib.length+" salvo(s)")+'<div class="card row" style="padding:6px 12px">'+ic("search","s")+'<input type="text" id="q" placeholder="Buscar pelo título" value="'+esc(S.q)+'" style="border:0;background:transparent"></div>'+seg(["Todos","Favoritos"],S.flt==="all"?"Todos":"Favoritos","flt")+'<div class="mt"></div>';
+  if(!items.length) return h+'<div class="card" style="text-align:center;padding:30px 16px"><div class="mark" style="margin:0 auto 12px;width:56px;height:56px;border-radius:16px">'+ic("folder","l")+'</div><b>Nada por aqui ainda</b><div class="mut" style="margin:4px 0 14px">Gere um conteúdo e toque em Salvar.</div><button class="btn" data-act="go" data-v="create">Criar agora</button></div>';
+  return h+items.map(function(p){ var c=p[0],i=p[1];
+    return '<div class="card"><div class="row sp"><b>'+esc(c.title)+'</b><button class="gh" style="min-height:38px;padding:6px 8px;color:'+(c.fav?"var(--wr)":"var(--t2)")+'" data-act="fav" data-v="'+i+'">'+ic("star","s")+'</button></div><div class="mut">'+esc(c.date)+' · '+esc(c.tone||"")+'</div><div class="mt">'+(c.plats||[]).map(function(x){return '<span class="tag">'+esc(x)+'</span>';}).join("")+'</div><div class="row mt"><button data-act="view" data-v="'+i+'" style="flex:1">'+ic("play","s")+'Abrir</button><button data-act="del" data-v="'+i+'">'+ic("trash","s")+'</button></div></div>'; }).join("");
 }
-
 function stats(){
-  var n = S.lib.length;
-  return '<div class="top"><h1>📊 Analytics</h1></div>' +
-  '<div class="card"><h3>Sua produção</h3><div style="font-size:32px;font-weight:700">' + n + '</div><div class="muted">conteúdo(s) salvo(s) neste aparelho</div></div>' +
-  '<div class="card muted">Este app não está conectado a TikTok, Instagram ou YouTube, então não mostra visualizações, curtidas ou retenção. Para isso seria preciso integrar as APIs dessas plataformas.</div>';
+  var n=S.lib.length, fav=S.lib.filter(function(c){return c.fav;}).length, cnt={};
+  S.lib.forEach(function(c){ (c.plats||[]).forEach(function(p){ cnt[p]=(cnt[p]||0)+1; }); });
+  var mx=Math.max.apply(null,PLATS.map(function(p){return cnt[p]||0;}).concat([1])), tn={};
+  S.lib.forEach(function(c){ if(c.tone) tn[c.tone]=(tn[c.tone]||0)+1; });
+  var top=Object.keys(tn).sort(function(a,b){return tn[b]-tn[a];})[0]||"–";
+  return head("Analytics","Sua produção neste aparelho")+'<div class="st"><div class="card"><b>'+S.created+'</b><span class="mut">criados</span></div><div class="card"><b>'+n+'</b><span class="mut">salvos</span></div><div class="card"><b>'+fav+'</b><span class="mut">favoritos</span></div></div>'+
+  '<h2>Plataformas mais usadas</h2><div class="card">'+(n?PLATS.map(function(p){ var v=cnt[p]||0; return '<div style="margin-bottom:10px"><div class="row sp mut"><span>'+p+'</span><span>'+v+'</span></div><div class="bt"><i style="width:'+Math.round(v/mx*100)+'%"></i></div></div>'; }).join(""):'<div class="mut">Salve conteúdos para ver o gráfico.</div>')+'</div>'+
+  '<div class="card row"><span class="ib d">'+ic("tune","s")+'</span><div><div class="mut">Tom mais usado</div><b>'+esc(top)+'</b></div></div>'+
+  '<div class="card row" style="align-items:flex-start"><span class="ib d">'+ic("info","s")+'</span><div class="mut">Visualizações, curtidas e retenção não aparecem aqui porque o app ainda não está conectado às redes sociais.</div></div>';
 }
-
 function prof(){
-  return '<div class="top"><h1>👤 Perfil</h1></div>' +
-  '<div class="card"><h3>Seu nome</h3><input type="text" id="name" value="' + esc(S.name) + '"></div>' +
-  '<div class="card"><h3>Preferências de conteúdo</h3>' +
-  '<div class="muted">Idioma padrão: Português (Brasil)</div>' +
-  '<div class="muted mt">Tom de voz padrão</div>' + chips(TONES, S.tone, "tone", false) +
-  '<div class="muted mt">Duração padrão</div>' + chips(DURS, S.dur, "dur", false) +
-  '<label class="t mt"><span>CTA automático</span><input type="checkbox" class="sw" data-act="cta"' + (S.cta ? " checked" : "") + '></label>' +
-  '<label class="t"><span>Hashtags automáticas</span><input type="checkbox" class="sw" data-act="tags"' + (S.tags ? " checked" : "") + '></label>' +
-  '<label class="t"><span>Emojis nas legendas</span><input type="checkbox" class="sw" data-act="emoji"' + (S.emoji ? " checked" : "") + '></label></div>' +
-  '<div class="card"><h3>Sobre</h3><div class="muted">BrainClip • versão 1.0.0</div><div class="row mt"><button data-act="wipe">Apagar meus dados</button></div></div>';
+  return '<div style="text-align:center;margin:8px 0 18px"><div class="av">'+esc((S.name||"C").charAt(0).toUpperCase())+'</div><h1>'+esc(S.name)+'</h1><div class="mut">Criador de conteúdo</div></div>'+
+  '<div class="card"><h3>Seu nome</h3><input type="text" id="name" value="'+esc(S.name)+'" maxlength="30" style="margin-top:10px"></div>'+
+  '<div class="card"><div class="row" style="margin-bottom:12px"><span class="ib d">'+ic("tune","s")+'</span><h3>Preferências de criação</h3></div><div class="mut" style="margin-bottom:8px">Tom padrão</div>'+seg(TONES,S.tone,"tone")+'<div class="mut" style="margin:14px 0 8px">Duração padrão</div>'+seg(DURS,S.dur,"dur")+'<div class="mt"></div>'+sw("cta",S.cta,"CTA automático","mega")+sw("tags",S.tags,"Hashtags automáticas","hash")+sw("emoji",S.emoji,"Emojis nas legendas","spark")+'</div>'+
+  '<div class="card" style="padding:4px 16px"><a class="lr" href="/privacidade.html" style="color:inherit;text-decoration:none">'+'<span class="ib d">'+ic("shield","s")+'</span><span style="flex:1">Política de privacidade</span>'+ic("go","s")+'</a><div class="lr"><span class="ib d">'+ic("info","s")+'</span><span style="flex:1">Sobre o BrainClip<div class="mut">Versão 1.0.0</div></span></div></div>'+
+  '<button class="gh" style="width:100%;color:var(--wr)" data-act="wipe">'+ic("trash","s")+'Apagar meus dados</button>';
 }
-
 function render(){
-  var a = document.getElementById("app");
-  var h = S.tab === "home" ? home() : S.tab === "create" ? create() : S.tab === "lib" ? lib() : S.tab === "stats" ? stats() : prof();
-  a.innerHTML = h + (S.toast ? '<div class="toast">' + esc(S.toast) + '</div>' : "");
-  document.getElementById("tabs").innerHTML = TABS.map(function(t){
-    return '<button class="' + (S.tab === t[0] ? "on" : "") + '" data-act="go" data-v="' + t[0] + '"><span>' + t[1] + '</span>' + t[2] + '</button>';
-  }).join("");
+  var a=document.getElementById("app"), f=document.activeElement&&document.activeElement.id, pos=null;
+  if(f&&document.activeElement.selectionStart!=null) pos=document.activeElement.selectionStart;
+  a.innerHTML=(S.tab==="home"?home():S.tab==="create"?create():S.tab==="lib"?lib():S.tab==="stats"?stats():prof())+(S.toast?'<div class="toast">'+esc(S.toast)+'</div>':"");
+  document.getElementById("tabs").innerHTML=TABS.map(function(t){ return '<button class="'+(S.tab===t[0]?"on":"")+'" data-act="go" data-v="'+t[0]+'"><span class="pl">'+ic(t[1])+'</span>'+t[2]+'</button>'; }).join("");
+  if(f==="q"){ var e=document.getElementById("q"); if(e){ e.focus(); try{ e.setSelectionRange(pos,pos); }catch(x){} } }
 }
 
-/* ---------- Generation ---------- */
+/* ---- IA ---- */
 function plain(r){
-  var tg = Array.isArray(r.hashtags) ? r.hashtags.join(" ") : (r.hashtags || "");
-  var tt = Array.isArray(r.titles) ? r.titles.map(function(x,i){ return (i+1) + ". " + x; }).join("\n") : "";
-  return ["VERSÃO CURTA\n" + (r.short||""), "HOOK\n" + (r.hook||""), "LEGENDA\n" + (r.caption||""), "VERSÃO MÉDIA\n" + (r.medium||""), "VERSÃO LONGA\n" + (r.long||""),
-    "THUMBNAIL\n" + (r.thumbnail||""), "TÍTULOS\n" + tt, "HASHTAGS\n" + tg, "CTA\n" + (r.cta||"")].filter(function(x){ return x.split("\n")[1]; }).join("\n\n");
+  var tg=Array.isArray(r.hashtags)?r.hashtags.join(" "):(r.hashtags||""), tt=Array.isArray(r.titles)?r.titles.map(function(x,i){return (i+1)+". "+x;}).join("\n"):"";
+  return [["VERSÃO CURTA",r.short],["GANCHO",r.hook],["LEGENDA",r.caption],["VERSÃO MÉDIA",r.medium],["VERSÃO LONGA",r.long],["THUMBNAIL",r.thumbnail],["TÍTULOS",tt],["HASHTAGS",tg],["CTA",r.cta]].filter(function(p){return p[1];}).map(function(p){return p[0]+"\n"+p[1];}).join("\n\n");
 }
-var RULES = "Você é o motor do app BrainClip. Responda SOMENTE com um objeto JSON válido, sem markdown. Todo o texto em português do Brasil. " +
-  "Regras: nunca invente fatos, números, estudos ou resultados; use só o que o usuário informou (se faltar dado, use marcadores como [seu resultado aqui]). " +
-  "Não gere conteúdo ofensivo, ilegal, discriminatório, sexual explícito, violento ou de ódio; se o pedido for assim, responda {\"blocked\":true}. " +
-  "Campos: short (script 15-30s com [pausa] e [corte] quando útil), hook (frase de 3s), caption (legenda pronta), medium (script 45-60s), long (script 60-90s), thumbnail (máx. 6 palavras), titles (3 títulos), hashtags (lista), cta (frase). ";
-
-async function run(prompt){
-  S.loading = true; S.err = ""; render();
-  try{
-    var r = await sample.json(prompt, {cache:false});
-    if(!r || r.blocked || (!r.short && !r.medium && !r.long)){ S.err = r && r.blocked ? "Não foi possível gerar este conteúdo. Tente outra ideia." : "A resposta veio incompleta. Tente de novo."; S.step = r && r.blocked ? 1 : S.step; }
-    else { S.result = r; S.step = 3; S.editing = false; }
-  }catch(e){
-    S.err = e && e.code === "rate_limited" ? "Muitas tentativas. Aguarde um momento." : "Não foi possível gerar agora. Tente novamente.";
-  }
-  S.loading = false; render();
-}
+var RULES="Você é o motor do app BrainClip. Responda SOMENTE com um objeto JSON válido, sem markdown. Todo o texto em português do Brasil. Regras: nunca invente fatos, números, estudos ou resultados; use só o que o usuário informou (se faltar dado, use marcadores como [seu resultado aqui]). Não gere conteúdo ofensivo, ilegal, discriminatório, sexual explícito, violento ou de ódio; se o pedido for assim, responda {\"blocked\":true}. Campos: short (script 15-30s com [pausa] e [corte] quando útil), hook (frase de 3s), caption (legenda pronta), medium (script 45-60s), long (script 60-90s), thumbnail (máx. 6 palavras), titles (3 títulos), hashtags (lista), cta (frase). ";
 function cfgText(){
-  var d = S.dur === "Todas" ? "gere as três versões (short, medium e long)" : "gere só a versão de " + S.dur + " no campo correspondente (short=15-30s, medium=45-60s, long=60-90s) e deixe as outras vazias";
-  return "Ideia do usuário: " + S.idea + "\nTemplate: " + (S.template || "livre") + "\nTom: " + S.tone + "\nPlataformas: " + S.plats.join(", ") + "\nDuração: " + d + "\n" +
-    (S.cta ? "Inclua CTA." : "Deixe cta vazio.") + " " + (S.tags ? "Inclua hashtags." : "Deixe hashtags vazio.") + " " + (S.emoji ? "Use emojis com moderação nas legendas." : "Não use emojis.");
+  var d=S.dur==="Todas"?"gere as três versões (short, medium e long)":"gere só a versão de "+S.dur+" no campo correspondente (short=15-30s, medium=45-60s, long=60-90s) e deixe as outras vazias";
+  return "Ideia do usuário: "+S.idea+"\nModelo: "+(S.template||"livre")+"\nTom: "+S.tone+"\nPlataformas: "+S.plats.join(", ")+"\nDuração: "+d+"\n"+(S.cta?"Inclua CTA.":"Deixe cta vazio.")+" "+(S.tags?"Inclua hashtags.":"Deixe hashtags vazio.")+" "+(S.emoji?"Use emojis com moderação nas legendas.":"Não use emojis.");
 }
-function gen(variation){
-  if(!sample){ S.err = "A geração por IA está indisponível no momento."; render(); return; }
-  run(RULES + "\n" + cfgText() + (variation ? "\nCrie uma versão DIFERENTE da anterior, mantendo a mesma ideia central. Anterior:\n" + JSON.stringify(S.result) : ""));
+async function pedir(prompt){
+  var ctl=new AbortController(), tm=setTimeout(function(){ ctl.abort(); },58000);
+  try{
+    var res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt}),signal:ctl.signal});
+    if(!res.ok) throw {code:res.status===429?"rate":"err"};
+    var d=await res.json(), t=String(d.text||"").replace(/```json|```/g,"").trim();
+    try{ return JSON.parse(t); }catch(x){ throw {code:"json"}; }
+  } finally { clearTimeout(tm); }
 }
-
-/* ---------- Events ---------- */
+var mi=0, mt=null;
+async function run(prompt){
+  S.loading=true; S.err=""; render(); mi=0;
+  mt=setInterval(function(){ var e=document.getElementById("lm"); mi=(mi+1)%MSGS.length; if(e) e.textContent=MSGS[mi]; },2500);
+  try{
+    var r=await pedir(prompt);
+    if(!r||r.blocked||(!r.short&&!r.medium&&!r.long)){ S.err=r&&r.blocked?"Não foi possível gerar este conteúdo. Tente outra ideia.":"A resposta veio incompleta. Tente de novo."; if(r&&r.blocked) S.step=1; }
+    else { S.result=r; S.step=3; S.editing=false; S.created++; save(); }
+  }catch(e){
+    S.err=e&&e.name==="AbortError"?"A IA demorou demais. Tente de novo.":e&&e.code==="rate"?"Muitos pedidos agora. Tente de novo em instantes.":e&&e.code==="json"?"A resposta veio incompleta. Tente de novo.":"Não foi possível gerar agora. Tente novamente.";
+  }
+  clearInterval(mt); S.loading=false; render();
+}
+function gen(v){ run(RULES+"\n"+cfgText()+(v?"\nCrie uma versão DIFERENTE da anterior, mantendo a mesma ideia central. Anterior:\n"+JSON.stringify(S.result):"")); }
 function copyText(t){
-  function fb(){ var x = document.createElement("textarea"); x.value = t; document.body.appendChild(x); x.select(); try{ document.execCommand("copy"); toast("✅ Conteúdo copiado"); }catch(e){ toast("Não foi possível copiar"); } document.body.removeChild(x); }
-  try{ navigator.clipboard.writeText(t).then(function(){ toast("✅ Conteúdo copiado"); }, fb); }catch(e){ fb(); }
-}
-document.addEventListener("input", function(e){
-  if(e.target.id === "idea") S.idea = e.target.value;
-  if(e.target.id === "name"){ S.name = e.target.value.trim() || "Criador"; save(); }
-});
-document.addEventListener("click", function(e){
-  var b = e.target.closest("[data-act]"); if(!b) return;
-  var a = b.dataset.act, v = b.dataset.v;
-  if(b.type === "checkbox") return;
-  act(a, v);
-});
-document.addEventListener("change", function(e){
-  var b = e.target; if(b.type !== "checkbox") return;
-  S[b.dataset.act] = b.checked; save(); render();
-});
-function act(a, v){
-  if(a === "go"){ S.tab = v; if(v === "create" && S.step === 3 && !S.result) S.step = 1; render(); window.scrollTo(0,0); return; }
-  if(a === "sugg"){ S.idea = v; S.tab = "create"; S.step = 1; S.result = null; render(); return; }
-  if(a === "tpl"){ S.template = S.template === v ? "" : v; render(); return; }
-  if(a === "next"){
-    if(S.idea.trim().length < 3){ S.err = "Conte sua ideia para eu criar o conteúdo."; render(); return; }
-    S.err = ""; S.step = 2; render(); window.scrollTo(0,0); return;
-  }
-  if(a === "back"){ S.step = 1; S.err = ""; render(); return; }
-  if(a === "tone"){ S.tone = v; save(); render(); return; }
-  if(a === "dur"){ S.dur = v; save(); render(); return; }
-  if(a === "plat"){
-    var i = S.plats.indexOf(v);
-    if(i > -1){ if(S.plats.length > 1) S.plats.splice(i, 1); } else S.plats.push(v);
-    save(); render(); return;
-  }
-  if(a === "gen"){ gen(false); return; }
-  if(a === "regen"){ gen(true); return; }
-  if(a === "copy"){ copyText(plain(S.result)); return; }
-  if(a === "edit"){ S.editing = true; render(); return; }
-  if(a === "editcancel"){ S.editing = false; render(); return; }
-  if(a === "editgo"){
-    var el = document.getElementById("edit"), ins = el ? el.value.trim() : "";
-    if(!ins){ toast("Descreva a mudança"); return; }
-    run(RULES + "\nAplique SOMENTE esta alteração ao conteúdo e devolva o JSON completo com os mesmos campos.\nAlteração: " + ins + "\nConteúdo atual:\n" + JSON.stringify(S.result));
-    return;
-  }
-  if(a === "savec"){
-    var t = S.idea.trim().slice(0, 60) || "Sem título";
-    S.lib.unshift({title: t, date: new Date().toLocaleDateString("pt-BR"), plats: S.plats.slice(), result: S.result});
-    save(); toast("💾 Salvo em Meus Conteúdos"); return;
-  }
-  if(a === "export"){
-    var txt = plain(S.result);
-    if(navigator.share){ navigator.share({title: "Conteúdo", text: txt}).then(function(){ toast("✅ Exportado"); }, function(){}); }
-    else {
-      try{
-        var bl = new Blob([txt], {type:"text/plain;charset=utf-8"}), u = URL.createObjectURL(bl), an = document.createElement("a");
-        an.href = u; an.download = "conteudo.txt"; document.body.appendChild(an); an.click(); document.body.removeChild(an);
-        setTimeout(function(){ URL.revokeObjectURL(u); }, 1000); toast("✅ Exportado");
-      }catch(er){ copyText(txt); }
-    }
-    return;
-  }
-  if(a === "newc"){ S.step = 1; S.result = null; S.idea = ""; S.template = ""; S.err = ""; render(); return; }
-  if(a === "view"){ var c = S.lib[+v]; if(c){ S.result = c.result; S.idea = c.title; S.step = 3; S.tab = "create"; render(); } return; }
-  if(a === "del"){ S.lib.splice(+v, 1); save(); render(); return; }
-  if(a === "wipe"){ if(!S.wipe){ S.wipe = true; toast("Toque de novo para confirmar"); setTimeout(function(){ S.wipe = false; }, 3000); return; } S.wipe = false; try{ localStorage.removeItem(KEY); }catch(e){} S.lib = []; S.name = "Criador"; toast("Dados apagados"); return; }
+  function fb(){ var x=document.createElement("textarea"); x.value=t; document.body.appendChild(x); x.select(); try{ document.execCommand("copy"); toast("✅ Copiado"); }catch(e){ toast("Não foi possível copiar"); } document.body.removeChild(x); }
+  try{ navigator.clipboard.writeText(t).then(function(){ toast("✅ Copiado"); },fb); }catch(e){ fb(); }
 }
 
-load();
-render();
-if("serviceWorker" in navigator){ window.addEventListener("load", function(){ navigator.serviceWorker.register("/sw.js").catch(function(){}); }); }
-
+/* ---- eventos ---- */
+document.addEventListener("input",function(e){
+  var id=e.target.id;
+  if(id==="idea"){ S.idea=e.target.value; var c=document.getElementById("cnt"); if(c) c.textContent=S.idea.length+" / 1500"; }
+  if(id==="name"){ S.name=e.target.value.trim()||"Criador"; save(); }
+  if(id==="q"){ S.q=e.target.value; render(); }
+});
+document.addEventListener("change",function(e){ var b=e.target; if(b.type!=="checkbox") return; S[b.dataset.act]=b.checked; save(); render(); });
+document.addEventListener("click",function(e){ var b=e.target.closest("[data-act]"); if(!b||b.type==="checkbox") return; act(b.dataset.act,b.dataset.v); });
+function act(a,v){
+  if(a==="go"){ S.tab=v; if(v==="create"&&S.step===3&&!S.result) S.step=1; render(); window.scrollTo(0,0); return; }
+  if(a==="sugg"){ S.idea=v; S.tab="create"; S.step=1; S.result=null; S.err=""; render(); window.scrollTo(0,0); return; }
+  if(a==="tpl0"){ S.template=TPL[+v][3]; S.tab="create"; S.step=1; S.result=null; render(); window.scrollTo(0,0); return; }
+  if(a==="tpl"){ var t=TPL[+v][3]; S.template=S.template===t?"":t; render(); return; }
+  if(a==="next"){ if(S.idea.trim().length<3){ S.err="Conte sua ideia para eu criar o conteúdo."; render(); return; } S.err=""; S.step=2; render(); window.scrollTo(0,0); return; }
+  if(a==="back"){ S.step=1; S.err=""; render(); return; }
+  if(a==="tone"||a==="dur"){ S[a]=v; save(); render(); return; }
+  if(a==="plat"){ var i=S.plats.indexOf(v); if(i>-1){ if(S.plats.length>1) S.plats.splice(i,1); } else S.plats.push(v); save(); render(); return; }
+  if(a==="gen"){ gen(false); return; }
+  if(a==="regen"){ gen(true); return; }
+  if(a==="copy"){ copyText(plain(S.result)); return; }
+  if(a==="copy1"){ copyText(sectTxt(S.result[v])); return; }
+  if(a==="edit"){ S.editing=true; render(); return; }
+  if(a==="editcancel"){ S.editing=false; render(); return; }
+  if(a==="editgo"){ var el=document.getElementById("edit"), ins=el?el.value.trim():""; if(!ins){ toast("Descreva a mudança"); return; } run(RULES+"\nAplique SOMENTE esta alteração ao conteúdo e devolva o JSON completo com os mesmos campos.\nAlteração: "+ins+"\nConteúdo atual:\n"+JSON.stringify(S.result)); return; }
+  if(a==="savec"){ S.lib.unshift({title:S.idea.trim().slice(0,60)||"Sem título",date:new Date().toLocaleDateString("pt-BR"),plats:S.plats.slice(),tone:S.tone,fav:false,result:S.result}); save(); toast("💾 Salvo em Meus Conteúdos"); return; }
+  if(a==="export"){
+    var txt=plain(S.result);
+    if(navigator.share){ navigator.share({title:"BrainClip",text:txt}).catch(function(){}); return; }
+    try{ var bl=new Blob([txt],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(bl),an=document.createElement("a"); an.href=u; an.download="conteudo.txt"; document.body.appendChild(an); an.click(); document.body.removeChild(an); setTimeout(function(){ URL.revokeObjectURL(u); },1000); toast("✅ Arquivo baixado"); }catch(er){ copyText(txt); }
+    return;
+  }
+  if(a==="newc"){ S.step=1; S.result=null; S.idea=""; S.template=""; S.err=""; render(); window.scrollTo(0,0); return; }
+  if(a==="view"){ var c=S.lib[+v]; if(c){ S.result=c.result; S.idea=c.title; S.step=3; S.tab="create"; render(); window.scrollTo(0,0); } return; }
+  if(a==="fav"){ var f=S.lib[+v]; if(f){ f.fav=!f.fav; save(); render(); } return; }
+  if(a==="flt"){ S.flt=v==="Favoritos"?"fav":"all"; render(); return; }
+  if(a==="del"){ S.lib.splice(+v,1); save(); render(); toast("Removido"); return; }
+  if(a==="wipe"){ if(!S.wipe){ S.wipe=true; toast("Toque de novo para confirmar"); setTimeout(function(){ S.wipe=false; },3000); return; } S.wipe=false; try{ localStorage.removeItem(KEY); }catch(e){} S.lib=[]; S.name="Criador"; S.created=0; toast("Dados apagados"); return; }
+}
+load(); render();
+if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("/sw.js").catch(function(){}); }); }
 </script>
 </body>
 </html>
